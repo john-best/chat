@@ -31,13 +31,25 @@
         </div>
         <div class="container">
             <div class="rps_text">Choose your weapon!</div>
-            <form>
-                <input type="radio" name="rps_option" value="rock" checked>Rock <br />
-                <input type="radio" name="rps_option" value="paper">Paper <br />
-                <input type="radio" name="rps_option" value="scissor">Scissor <br />
+            <input type="submit" value="Rock" id="rps_choose_rock">
+            <input type="submit" value="Paper" id="rps_choose_paper">
+            <input type="submit" value="Scissor" id="rps_choose_scissor">
+        </div>
+        <br />
+        <br />
 
-                <input type="submit" value="Go!" id="rps_choose">
-            </form>
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-heading">Chat!</div>
+                <div class="panel-body">
+                    <div class="chat-text"></div>
+                    <div class="chat-input">
+                        <input type="text" class="form-control" id="chat-input-text" placeholder="Enter text here...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         </div>
     </body>
 </html> 

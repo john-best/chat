@@ -10,15 +10,31 @@ socketio = SocketIO(app)
 def home():
     return render_template('rps.html')
 
-# begin socketio stuff
-@socketio.on('server_update', namespace='/rps')
-def handle_server_update(server_update):
-    print('Successful rps recv')
-    emit('user_update', {'data': 'HELP ME'}, broadcast=True)
 
-@socketio.on('connect', namespace='/rps')
-def handle_connect():
+
+@socketio.on('connect', namespace='/')
+def handle_rps_connect():
     print('A user connected!')
 
+@socketio.on('disconnect',  namespace='/')
+def handle_rps_disconnect():
+    print('A user has disconnected')
+
+
+# begin rps event handling
+
+@socketio.on('rps_server_update', namespace='/')
+def handle_rps_server_update(server_update):
+    emit('rps_user_update', server_update, broadcast=True)
+
+# end rps event handling
+
+# begin chat
+
+@socketio.on('chat_send_to_server', namespace='/')
+def handle_chat_message(message):
+    emit('chat_send_to_user', message, broadcast=True)
+
+# end chat
 if __name__ == '__main__':
     socketio.run(app)
