@@ -1,18 +1,14 @@
-$(function(){
-    $('#rps_choose').click(function(){
+$(document).ready(function() {
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/rps');
+    socket.on('user_update', function(message) {
+        $("div.rps_text").prepend("A user has selected something!");
+        return false;
+    });
 
-        $.ajax({
-            url: '/rps_choose',
-            data: $('form').serialize(),
-            type: 'POST',
-            success: function(response){
-                console.log(response);
-                $("div.rps_text").replaceWith("Successfully chosen!");
-            },
-            error: function(error){
-                console.log(error);
-                $("div.rps_text").prepend("An error has occured <br />");
-            }
-        });
+    $('#rps_choose').click(function(e){
+
+        socket.emit('server_update', $('form').serialize());
+
+        return false;
     });
 });
