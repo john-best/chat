@@ -52,3 +52,15 @@ class Room:
     
     def get_id(self):
         return self.id
+
+    def get_json(self):
+        data = {
+                'room': {
+                    'id': '{}'.format(self.id),
+                    'owner': '{}'.format(self.owner),
+                    'user': '{}'.format(self.user),
+                    'password': '{}'.format(self.password),
+                    }
+                }
+
+        return json.dumps(data)

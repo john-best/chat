@@ -9,6 +9,10 @@ $(document).ready(function() {
         return false;
     });
 
+    socket.on('lobby_room_created', function(room) {
+        console.log('Room created!')
+    });
+
     socket.on('lobby_return_rooms', function(rooms) {
         console.log(rooms);
     });
@@ -27,5 +31,11 @@ $(document).ready(function() {
         socket.emit('lobby_create_room', {'creator': username});
         return false;
     });
+
+    $('#lobby-refresh-rooms').click(function(e) {
+        socket.emit('lobby_get_rooms');
+        return false;
+    });
+
 
 });
