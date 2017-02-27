@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/rps');
 
     socket.on('rps_user_update', function(message) {
         $("div.chat-text").append("A user has selected " + message.data + "! <br />");
@@ -21,7 +21,7 @@ $(document).ready(function() {
         return false;
     });
 
-    socket.on('chat_send_to_user', function(message) {
+    socket.on('rps_chat_send_to_user', function(message) {
         $("div.chat-text").append("User said: " + message.data + "<br />");
         return false;
     });
@@ -29,7 +29,7 @@ $(document).ready(function() {
     $('#chat-input-text').keypress(function(e) {
         if (e.which == '13') {
             if ($('#chat-input-text').val()) {
-                socket.emit('chat_send_to_server', {'data': $('#chat-input-text').val()});
+                socket.emit('rps_chat_send_to_server', {'data': $('#chat-input-text').val()});
                 $('#chat-input-text').val("");
             }
         }
