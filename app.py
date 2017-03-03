@@ -60,8 +60,9 @@ def handle_lobby_create_room(data):
 
 @socketio.on('lobby_get_rooms')
 def handle_lobby_get_rooms():
-    rooms = room_handler.get_room_ids()
-    emit('lobby_return_rooms', json.dumps({'rooms':rooms}))
+    rooms = room_handler.get_rooms_json()
+    emit('lobby_return_rooms', json.dumps(rooms))
+
 
 if __name__ == '__main__':
     socketio.run(app)

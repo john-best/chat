@@ -1,3 +1,5 @@
+import json
+
 class RoomHandler:
     def __init__(self):
         self.rooms = []
@@ -29,6 +31,13 @@ class RoomHandler:
             if (room.get_owner() == owner):
                 room.join(user)
                 return
+
+    def get_rooms_json(self):
+        rooms_json_list = []
+        for room in self.rooms:
+            rooms_json_list.append(room.get_json())
+        data = { "rooms": rooms_json_list }
+        return data
 
 class Room:
     def __init__(self, rooms, owner, id, password=None):
@@ -62,5 +71,4 @@ class Room:
                     'password': '{}'.format(self.password),
                     }
                 }
-
-        return json.dumps(data)
+        return data

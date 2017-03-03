@@ -10,11 +10,14 @@ $(document).ready(function() {
     });
 
     socket.on('lobby_room_created', function(room) {
-        console.log('Room created!')
+        console.log('Room created!');
     });
 
     socket.on('lobby_return_rooms', function(rooms) {
-        console.log(rooms);
+        var parsed = JSON.parse(rooms);
+        for (var i = 0; i < parsed.rooms.length; i++) {
+            console.log(parsed.rooms[i]);
+        }
     });
 
     $('#chat-input-text').keypress(function(e) {
