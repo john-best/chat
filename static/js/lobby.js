@@ -11,7 +11,7 @@ $(document).ready(function() {
 
     socket.on('lobby_room_created', function(room) {
         var parsed = JSON.parse(room);
-        appendRoom(true);
+        appendRoom(true, parsed);
     });
 
     socket.on('lobby_return_rooms', function(rooms) {
@@ -22,9 +22,9 @@ $(document).ready(function() {
             }
 
             if (rooms.owner == username) {
-                appendRoom(true);
+                appendRoom(true, parsed.rooms[i]);
             } else {
-                appendRoom(false);
+                appendRoom(false, parsed.rooms[i]);
             }
 
             if (i % 3 == 0) {
@@ -60,18 +60,31 @@ $(document).ready(function() {
         return false;
     });
 
-    function appendRoom(isOwner) {
+    function appendRoom(isOwner, json) {
         var content = "<div class=\"col-md-4\"> \
             <div class=\"panel panel-default\"> \
             <div class=\"panel-heading\">Room";
+
+        content += " (ID: " + json.room.id + ")";
 
         if (isOwner) {
             content += " (Yours!)";
         }
 
-        content += "</div></div></div>";
+        content += "</div>";
+        content += "<div class=\"panel-body\">Owner: " + json.room.owner;
+        content += "</div>";
+
+        content += "<div class=\"panel-footer\"> \
+            <input type=\"button\" value=\"Join Room\" id=\"lobby-join-room\"> \
+            <input type=\"button\" value=\"Delete Room\" id=\"lobby-delete-room\" disabled>";
+        content += "</div>";
 
         $("div.rooms").append(content);
+
+        if (isOwner) {
+            $('#lobby-delete-room').removeAttr("disabled");
+        }
     }
 
 });
