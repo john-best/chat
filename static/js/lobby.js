@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var username = 'Gamer' + parseInt(Math.random() * 1000);
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
-
+    var room_count = 0;
     socket.emit('lobby_get_rooms');
 
     socket.on('chat_send_to_user', function(message) {
@@ -11,17 +11,27 @@ $(document).ready(function() {
 
     socket.on('lobby_room_created', function(room) {
         var parsed = JSON.parse(room);
-        $("div.rooms").append("Room (yours!) <br />");
+        appendRoom(true);
     });
 
     socket.on('lobby_return_rooms', function(rooms) {
         var parsed = JSON.parse(rooms);
         for (var i = 0; i < parsed.rooms.length; i++) {
-            if (rooms.owner == username) {
-                $("div.rooms").append("Room (yours!) <br />");
-            } else {
-                $("div.rooms").append("Lobby <br />");
+            if (i % 3 == 0) {
+                $("div.rooms").append("<div class=\"row\">");
             }
+
+            if (rooms.owner == username) {
+                appendRoom(true);
+            } else {
+                appendRoom(false);
+            }
+
+            if (i % 3 == 0) {
+                $("div.rooms").append("</div>");
+            }
+
+            room_count += 1;
         }
     });
 
@@ -50,5 +60,18 @@ $(document).ready(function() {
         return false;
     });
 
+    function appendRoom(isOwner) {
+        var content = "<div class=\"col-md-4\"> \
+            <div class=\"panel panel-default\"> \
+            <div class=\"panel-heading\">Room";
+
+        if (isOwner) {
+            content += " (Yours!)";
+        }
+
+        content += "</div></div></div>";
+
+        $("div.rooms").append(content);
+    }
 
 });
