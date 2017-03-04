@@ -5,7 +5,7 @@ $(document).ready(function() {
     socket.emit('lobby_get_rooms');
 
     socket.on('chat_send_to_user', function(message) {
-        $("div.chat-text").append("User said: " + message.data + "<br />");
+        $("div.chat-text").append(message.user + " said: " + message.data + "<br />");
         return false;
     });
 
@@ -42,7 +42,7 @@ $(document).ready(function() {
     $('#chat-input-text').keypress(function(e) {
         if (e.which == '13') {
             if ($('#chat-input-text').val()) {
-                socket.emit('chat_send_to_server', {'data': $('#chat-input-text').val()});
+                socket.emit('chat_send_to_server', {'user': username, 'data': $('#chat-input-text').val()});
                 $('#chat-input-text').val("");
             }
         }
