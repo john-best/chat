@@ -39,6 +39,18 @@ class RoomHandler:
         data = { "rooms": rooms_json_list }
         return data
 
+    def get_room_json(self, room):
+        for potential_room in self.rooms:
+            if room is potential_room:
+                return room.get_json()
+        return None
+    
+    def room_check_exists(self, owner):
+        for potential_room in self.rooms:
+            if owner == potential_room.get_owner():
+                return True
+        return False
+
 class Room:
     def __init__(self, rooms, owner, id, password=None):
         self.rooms = rooms
@@ -72,3 +84,6 @@ class Room:
                     }
                 }
         return data
+
+    def get_owner(self):
+        return self.owner

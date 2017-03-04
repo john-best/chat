@@ -10,14 +10,23 @@ $(document).ready(function() {
     });
 
     socket.on('lobby_room_created', function(room) {
-        console.log('Room created!');
+        var parsed = JSON.parse(room);
+        $("div.rooms").append("Room (yours!) <br />");
     });
 
     socket.on('lobby_return_rooms', function(rooms) {
         var parsed = JSON.parse(rooms);
         for (var i = 0; i < parsed.rooms.length; i++) {
-            console.log(parsed.rooms[i]);
+            if (rooms.owner == username) {
+                $("div.rooms").append("Room (yours!) <br />");
+            } else {
+                $("div.rooms").append("Lobby <br />");
+            }
         }
+    });
+
+    socket.on('lobby_room_already_exists', function() {
+        console.log("Error: You already have a room.")
     });
 
     $('#chat-input-text').keypress(function(e) {
@@ -36,6 +45,7 @@ $(document).ready(function() {
     });
 
     $('#lobby-refresh-rooms').click(function(e) {
+        $("div.rooms").html("");
         socket.emit('lobby_get_rooms');
         return false;
     });
