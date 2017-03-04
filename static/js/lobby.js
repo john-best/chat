@@ -21,7 +21,7 @@ $(document).ready(function() {
                 $("div.rooms").append("<div class=\"row\">");
             }
 
-            if (rooms.owner == username) {
+            if (parsed.rooms[i].room.owner == username) {
                 appendRoom(true, parsed.rooms[i]);
             } else {
                 appendRoom(false, parsed.rooms[i]);
