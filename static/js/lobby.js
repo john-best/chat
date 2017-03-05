@@ -2,6 +2,8 @@ $(document).ready(function() {
     var username = 'Gamer' + parseInt(Math.random() * 1000);
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
     var room_count = 0;
+    var own_room = -1;
+
     socket.emit('lobby_get_rooms');
 
     socket.on('chat_send_to_user', function(message) {
@@ -11,7 +13,6 @@ $(document).ready(function() {
 
     socket.on('lobby_room_created', function(room) {
         var parsed = JSON.parse(room);
-        console.log(parsed);
         appendRoom(true, parsed);
     });
 
@@ -40,6 +41,11 @@ $(document).ready(function() {
         console.log("Error: You already have a room.")
     });
 
+    socket.on('lobby_room_deleted_by_owner', function() {
+        $("div.rooms").html("");
+        socket.emit('lobby_get_rooms');
+    });
+
     $('#chat-input-text').keypress(function(e) {
         if (e.which == '13') {
             if ($('#chat-input-text').val()) {
@@ -62,6 +68,10 @@ $(document).ready(function() {
         return false;
     });
 
+    $(document).on('click', '#lobby-delete-room', function(e) {
+        socket.emit('lobby_delete_room', {'user': username, 'id': own_room});
+        return false;
+    });
     function appendRoom(isOwner, json) {
         var content = "<div class=\"col-md-4\"> \
             <div class=\"panel panel-default\"> \
@@ -71,6 +81,7 @@ $(document).ready(function() {
 
         if (isOwner) {
             content += " (Yours!)";
+            own_room = parseInt(json.room.id);
         }
 
         content += "</div>";
@@ -82,14 +93,13 @@ $(document).ready(function() {
 
         content += "<div class=\"panel-footer\"> \
             <input type=\"button\" value=\"Join Room\" id=\"lobby-join-room\"> \
-            <input type=\"button\" value=\"Delete Room\" id=\"lobby-delete-room\" disabled>";
-        content += "</div>";
+            <input type=\"button\" value=\"Delete Room\" id=\"lobby-delete-room\" ";
+
+        if (!isOwner) {
+            content += "disabled";
+        }
+        content += "></div>";
 
         $("div.rooms").append(content);
-
-        if (isOwner) {
-            $('#lobby-delete-room').removeAttr("disabled");
-        }
     }
-
 });

@@ -14,8 +14,8 @@ class RoomHandler:
     def delete_room(self, room):
         if room in self.rooms:
             self.rooms.remove(room)
-            return True
-        return False
+            return room
+        return None
 
     def get_rooms(self):
         return self.rooms
@@ -50,6 +50,12 @@ class RoomHandler:
             if owner == potential_room.get_owner():
                 return True
         return False
+    
+    def get_room(self, id):
+        for room in self.rooms:
+            if id is room.get_id():
+                return room
+        return None
 
 class Room:
     def __init__(self, rooms, owner, id, password):

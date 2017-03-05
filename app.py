@@ -67,6 +67,22 @@ def handle_lobby_get_rooms():
     rooms = room_handler.get_rooms_json()
     emit('lobby_return_rooms', json.dumps(rooms))
 
+@socketio.on('lobby_delete_room')
+def handle_lobby_delete_room(data):
+    deleted = None
+    room = room_handler.get_room(data['id'])
+    
+    if room is None:
+        emit('lobby_room_does_not_exist')
+        return
+
+    if room.get_owner() == data['user']:
+        deleted = room_handler.delete_room(room)
+
+    if deleted is not None:
+        emit('lobby_room_deleted_by_owner')
+    else:
+        emit('lobby_room_fail_delete')
 
 if __name__ == '__main__':
     socketio.run(app)
