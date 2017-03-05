@@ -5,8 +5,8 @@ class RoomHandler:
         self.rooms = []
         self.next_id = 0
 
-    def create_room(self, owner):
-        new_room = Room(self.rooms, owner, self.next_id)
+    def create_room(self, owner, password):
+        new_room = Room(self.rooms, owner, self.next_id, password)
         self.rooms.append(new_room)
         self.next_id += 1
         return new_room
@@ -52,12 +52,16 @@ class RoomHandler:
         return False
 
 class Room:
-    def __init__(self, rooms, owner, id, password=None):
+    def __init__(self, rooms, owner, id, password):
         self.rooms = rooms
         self.owner = owner
         self.password = password
         self.user = None
         self.id = id
+        self.has_password = False
+
+        if self.password is not '':
+            self.has_password = True
 
     def join(self, user):
         self.user = user
@@ -80,7 +84,7 @@ class Room:
                     'id': '{}'.format(self.id),
                     'owner': '{}'.format(self.owner),
                     'user': '{}'.format(self.user),
-                    'password': '{}'.format(self.password),
+                    'password': '{}'.format(str(self.has_password).lower()),
                     }
                 }
         return data

@@ -11,6 +11,7 @@ $(document).ready(function() {
 
     socket.on('lobby_room_created', function(room) {
         var parsed = JSON.parse(room);
+        console.log(parsed);
         appendRoom(true, parsed);
     });
 
@@ -50,7 +51,8 @@ $(document).ready(function() {
     });
 
     $('#lobby-create-room').click(function(e) {
-        socket.emit('lobby_create_room', {'creator': username});
+
+        socket.emit('lobby_create_room', {'creator': username, 'password': $('#room-password').val()});
         return false;
     });
 
@@ -72,7 +74,10 @@ $(document).ready(function() {
         }
 
         content += "</div>";
-        content += "<div class=\"panel-body\">Owner: " + json.room.owner;
+        content += "<div class=\"panel-body\"><p>Owner: " + json.room.owner +"</p>";
+        if (json.room.password == "true") {
+            content += "<p>Password Protected</p>";
+        }
         content += "</div>";
 
         content += "<div class=\"panel-footer\"> \

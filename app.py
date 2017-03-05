@@ -55,7 +55,7 @@ def handle_rps_server_update(server_update):
 @socketio.on('lobby_create_room')
 def handle_lobby_create_room(data):
     if not room_handler.room_check_exists(data['creator']):
-        room = room_handler.create_room(data['creator'])
+        room = room_handler.create_room(data['creator'], data['password'])
         room_json = room_handler.get_room_json(room)
         join_room(room.get_id())
         emit('lobby_room_created', json.dumps(room_json))
