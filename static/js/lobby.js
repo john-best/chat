@@ -43,6 +43,7 @@ $(document).ready(function() {
 
     socket.on('lobby_room_deleted_by_owner', function() {
         $("div.rooms").html("");
+        own_room = -1;
         socket.emit('lobby_get_rooms');
     });
 
