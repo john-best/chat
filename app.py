@@ -35,23 +35,6 @@ def handle_chat_connect_response(name):
     emit('chat_recv_user_connected', name, broadcast=True)
 
 # end chat
-# begin rps event handling
-
-@socketio.on('connect', namespace='/rps')
-def handle_rps_connect():
-    print('A user connected!')
-
-@socketio.on('disconnect',  namespace='/rps')
-def handle_rps_disconnect():
-    print('A user has disconnected')
-
-@socketio.on('rps_chat_send_to_server', namespace='/rps')
-def handle_rps_chat_message(message):
-    emit('rps_chat_send_to_user', message, broadcast=True)
-
-@socketio.on('rps_server_update', namespace='/rps')
-def handle_rps_server_update(server_update):
-    emit('rps_user_update', server_update, broadcast=True)
 
 # end rps event handling
 
