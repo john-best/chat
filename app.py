@@ -77,8 +77,11 @@ def login():
     flash('Logged in')
     return redirect(url_for('lobby'))
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET, POST'])
 def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+        
     user = User(request.form['username'], request.form['password'], request.form['email'])
     db.session.add(user)
     db.session.commit()
