@@ -1,10 +1,7 @@
 {% extends "base.html" %} 
 {% block title %}Register{% endblock %} 
-{% block head %} 
-{{ super() }} 
-{% endblock %} 
-{% block js %}
-{% endblock %}
+{% block head %} {{ super() }} {% endblock %} 
+{% blockjs %} {% endblock %} 
 {% block content %}
 <div class="container">
     <div class="header">
@@ -33,9 +30,24 @@
     <div class="panel panel-default">
         <div class="panel-heading">Registration</div>
         <div class="panel-body">
-             <!-- todo -->
-        </div>
-        <div class="panel-footer">
+            <form>
+                <div class="form-group">
+                    <label for="reg-username">Username</label>
+                    <input type="text" class="form-control" id="reg-username" placeholder="Username">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" class="form-control" id="reg-password" placeholder="Password">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" class="form-control" id="reg-email" placeholder="user@example.com">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
     </div>
 </div>
