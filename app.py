@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, flash, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -16,11 +16,8 @@ login_manager.init_app(app)
 
 room_handler = RoomHandler()
 
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rps.db'
 db = SQLAlchemy(app)
-db.create_all()
-db.session.commit()
 
 # flask-login user class
 class User(db.Model):
@@ -56,6 +53,9 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
+# will create tables if not exist
+db.create_all()
+db.session.commit()
 
 # routes
 @app.route('/', methods=['GET'])
