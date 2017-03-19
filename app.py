@@ -19,7 +19,8 @@ room_handler = RoomHandler()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rps.db'
 db = SQLAlchemy(app)
-
+db.create_all()
+db.session.commit()
 
 # flask-login user class
 class User(db.Model):
@@ -77,11 +78,11 @@ def login():
     flash('Logged in')
     return redirect(url_for('lobby'))
 
-@app.route('/register', methods=['GET, POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
-        
+
     user = User(request.form['username'], request.form['password'], request.form['email'])
     db.session.add(user)
     db.session.commit()
