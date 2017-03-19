@@ -84,23 +84,28 @@ def register():
         return render_template('register.html')
 
     user = User(request.form['username'], request.form['password'], request.form['email'])
-    db.session.add(user)
-    try:
-        db.session.commit()
-    except Exception:
-        # TODO: registration failure
-        print("Probably not unique email or password -- need to check!")
+
+    user_exists = db.session.query(User.id).filter_by(username=request.form['username']).scalar() is not None
+    email_exists = db.session.query(User.id).filter_by(email=request.form['email']).scalar() is not None
+
+    if user_exists or email_exists:
+        flash('Username or Email already taken', 'error')
         return redirect(url_for('register'))
-    flash('User registered')
-    return redirect(url_for('lobby'))
+    else:
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except Exception as e:
+            flash('An internal server error has occured.', 'error')
+            return redirect(url_for('register'))
+
+        flash('You have successfully registered. Please login.')
+        return redirect(url_for('lobby'))
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    pass
-
-# flask_login stuff
-
-
+    logout_user()
+    return redirect(url_for('lobby'))
 
 # begin chat
 
