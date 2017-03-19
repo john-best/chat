@@ -6,9 +6,14 @@ $(document).ready(function() {
 
     socket.emit('lobby_get_rooms');
 
+    socket.emit('chat_send_connected', { 'username': username });
+
+    socket.on('chat_recv_user_connected', function(user) {
+        $("div.chat-text").append(user.username + " has connected. <br />");
+    });
+
     socket.on('chat_send_to_user', function(message) {
         $("div.chat-text").append(message.user + " said: " + message.data + "<br />");
-        return false;
     });
 
     socket.on('lobby_room_created', function(room) {

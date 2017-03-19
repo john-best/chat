@@ -30,6 +30,10 @@ def handle_chat_connect():
 def handle_chat_disconnect():
     pass
 
+@socketio.on('chat_send_connected', namespace='/')
+def handle_chat_connect_response(name):
+    emit('chat_recv_user_connected', name, broadcast=True)
+
 # end chat
 # begin rps event handling
 
