@@ -17,8 +17,8 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Main</a></li>
-                    <li><a href="/login">Login</a></li>
-                    <li class="active"><a href="#">Register</a></li>
+                    <li class="active"><a href="#">Login</a></li>
+                    <li><a href="/register">Register</a></li>
                 </ul>
             </div>
         </nav>
@@ -27,9 +27,9 @@
 
 <div class="container">
     <div class="panel panel-default">
-        <div class="panel-heading">Registration</div>
+        <div class="panel-heading">Login</div>
         <div class="panel-body">
-            <form action="/register" method="post">
+            <form action="/login" method="post">
                 <div class="form-group">
                     <label for="reg-username">Username</label>
                     <input type="text" name="username" class="form-control" id="reg-username" placeholder="Username">
@@ -38,11 +38,6 @@
                 <div class="form-group">
                     <label for="reg-password">Password</label>
                     <input type="password" name="password" class="form-control" id="reg-password" placeholder="Password">
-                </div>
-
-                <div class="form-group">
-                    <label for="reg-email">Email Address</label>
-                    <input type="email" name="email" class="form-control" id="reg-email" placeholder="user@example.com">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, json, request, flash, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy 
 from RoomAPI import RoomHandler, Room
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -48,10 +48,15 @@ class User(db.Model):
         return False
 
     def get_id(self):
-        return unicode(self.id)
+        return str(self.id)
 
     def __repr__(self):
         return '<User %r>' % (self.username)
+
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 # will create tables if not exist
 db.create_all()
@@ -59,15 +64,15 @@ db.session.commit()
 
 # routes
 @app.route('/', methods=['GET'])
+@login_required
 def lobby():
     return render_template('lobby.html')
 
-@app.route('/rps', methods=['GET'])
-def rps_room():
-    return render_template('rps.html')
-
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+
+    if request.method == 'GET':
+        return render_template('login.html')
     username = request.form['username']
     password = request.form['password']
     registered_user = User.query.filter_by(username=username, password=password).first()
