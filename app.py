@@ -1,7 +1,7 @@
 from flask import Flask, render_template, json, request, flash, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from RoomAPI import RoomHandler, Room
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -85,7 +85,12 @@ def register():
 
     user = User(request.form['username'], request.form['password'], request.form['email'])
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception:
+        # TODO: registration failure
+        print("Probably not unique email or password -- need to check!")
+        return redirect(url_for('register'))
     flash('User registered')
     return redirect(url_for('lobby'))
 
