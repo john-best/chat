@@ -29,13 +29,13 @@ class User(db.Model):
 
     def __init__(self, username, password, email):
         self.username = username
-        self.password = password
+        self.password = self.set_password(password)
         self.email = email
 
-    def set_password(self , password):
-        self.password = generate_password_hash(password)
+    def set_password(self, password):
+        return generate_password_hash(password)
 
-    def check_password(self , password):
+    def check_password(self, password):
         return check_password_hash(self.password, password)
 
     def is_authenticated(self):
@@ -55,8 +55,8 @@ class User(db.Model):
 
 
 @login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+def load_user(user_id):
+    return User.query.get(user_id)
 
 # will create tables if not exist
 db.create_all()
@@ -64,7 +64,6 @@ db.session.commit()
 
 # routes
 @app.route('/', methods=['GET'])
-@login_required
 def lobby():
     return render_template('lobby.html')
 
@@ -73,15 +72,18 @@ def login():
 
     if request.method == 'GET':
         return render_template('login.html')
+
     username = request.form['username']
     password = request.form['password']
-    registered_user = User.query.filter_by(username=username, password=password).first()
-    if registered_user is None:
-        flash('Username or Password is invalid', 'error')
+    user = User.query.filter_by(username=username).first()
+    if user is not None and user.check_password(password):
+        login_user(user, remember=True)
+        flash('Successfully logged in.')
         return redirect(url_for('lobby'))
-    login_user(registered_user)
-    flash('Logged in')
-    return redirect(url_for('lobby'))
+    else:
+        print(user.check_password(password))
+        flash('Invalid credentials.', 'error')
+        return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
