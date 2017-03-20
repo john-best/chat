@@ -90,7 +90,6 @@ def login():
         flash('Successfully logged in.')
         return redirect(url_for('lobby'))
     else:
-        print(user.check_password(password))
         flash('Invalid credentials.', 'error')
         return redirect(url_for('login'))
 
@@ -137,7 +136,6 @@ def handle_chat_connect():
 
 @socketio.on('disconnect', namespace='/')
 def handle_chat_disconnect():
-    print('{} has disconnected'.format(current_user.username))
     emit('chat_user_disconnected', {'message':'{} has disconnected'.format(current_user.username)}, broadcast=True)
 
 # end chat
