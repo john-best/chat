@@ -1,22 +1,21 @@
 $(document).ready(function() {
-    var username = 'Gamer' + parseInt(Math.random() * 1000);
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
     var room_count = 0;
     var own_room = -1;
+    var username = "";
 
     socket.emit('lobby_get_rooms');
-
-    socket.emit('chat_send_connected', { 'username': username });
 
     socket.on('chat_self_connected', function(user) {
         username = user.username;
         $("div.chat-text").append("You have connected. <br />");
     });
-    socket.on('chat_anon_user_connected', function(user) {
-        $("div.chat-text").append(user.username + " has connected. <br />");
+
+    socket.on('chat_user_connected', function(message) {
+        $("div.chat-text").append(message.message + "<br />");
     });
 
-    socket.on('chat_auth_user_connected', function(message) {
+    socket.on('chat_user_disconnected', function(message) {
         $("div.chat-text").append(message.message + "<br />");
     });
 

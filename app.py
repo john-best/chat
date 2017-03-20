@@ -1,9 +1,11 @@
 from flask import Flask, render_template, json, request, flash, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import AnonymousUserMixin
 from flask_sqlalchemy import SQLAlchemy 
 from RoomAPI import RoomHandler, Room
 from werkzeug.security import generate_password_hash, check_password_hash
+import random
 
 # setup
 app = Flask(__name__)
@@ -53,6 +55,13 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.username)
 
+
+# flask anon user class
+class AnonUser(AnonymousUserMixin):
+    def __init__(self):
+        self.username = 'Guest' + str(random.randint(1000, 9999))
+
+login_manager.anonymous_user = AnonUser
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -122,19 +131,14 @@ def handle_chat_message(message):
 
 @socketio.on('connect', namespace='/')
 def handle_chat_connect():
-    if current_user.is_authenticated:
-        emit('chat_self_connected', {'username':current_user.username})
-        emit('chat_auth_user_connected',
-        {'message':'{} has connected'.format(current_user.username)}, broadcast=True, include_self=False)
+    emit('chat_self_connected', {'username':current_user.username})
+    emit('chat_user_connected',
+    {'message':'{} has connected'.format(current_user.username)}, broadcast=True, include_self=False)
 
 @socketio.on('disconnect', namespace='/')
 def handle_chat_disconnect():
-    pass
-
-@socketio.on('chat_send_connected', namespace='/')
-def handle_chat_connect_response(name):
-    if not current_user.is_authenticated:
-        emit('chat_anon_user_connected', name, broadcast=True)
+    print('{} has disconnected'.format(current_user.username))
+    emit('chat_user_disconnected', {'message':'{} has disconnected'.format(current_user.username)}, broadcast=True)
 
 # end chat
 
