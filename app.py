@@ -1,6 +1,6 @@
 from flask import Flask, render_template, json, request, flash, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy 
 from RoomAPI import RoomHandler, Room
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -122,7 +122,10 @@ def handle_chat_message(message):
 
 @socketio.on('connect', namespace='/')
 def handle_chat_connect():
-    pass
+    if current_user.is_authenticated:
+        emit('chat_self_connected', {'username':current_user.username})
+        emit('chat_auth_user_connected',
+        {'message':'{} has connected'.format(current_user.username)}, broadcast=True, include_self=False)
 
 @socketio.on('disconnect', namespace='/')
 def handle_chat_disconnect():
@@ -130,7 +133,8 @@ def handle_chat_disconnect():
 
 @socketio.on('chat_send_connected', namespace='/')
 def handle_chat_connect_response(name):
-    emit('chat_recv_user_connected', name, broadcast=True)
+    if not current_user.is_authenticated:
+        emit('chat_anon_user_connected', name, broadcast=True)
 
 # end chat
 
