@@ -50,6 +50,12 @@ class RoomHandler:
             if owner == potential_room.get_owner():
                 return True
         return False
+
+    def get_room_by_owner(self, owner):
+        for potential_room in self.rooms:
+            if owner == potential_room.get_owner():
+                return potential_room
+        return None
     
     def get_room(self, id):
         for room in self.rooms:

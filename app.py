@@ -137,10 +137,11 @@ def handle_chat_connect():
 @socketio.on('disconnect', namespace='/')
 def handle_chat_disconnect():
     emit('chat_user_disconnected', {'message':'{} has disconnected'.format(current_user.username)}, broadcast=True)
+    ghost_room = room_handler.get_room_by_owner(current_user.username)
+    if ghost_room is not None:
+        room_handler.delete_room(ghost_room)
 
 # end chat
-
-# end rps event handling
 
 # begin lobby / room handling
 @socketio.on('lobby_create_room')
