@@ -8,19 +8,19 @@ $(document).ready(function() {
 
     socket.on('chat_self_connected', function(user) {
         username = user.username;
-        $("div.chat-text").append("You have connected. <br />");
+        appendText("You have connected.");
     });
 
     socket.on('chat_user_connected', function(message) {
-        $("div.chat-text").append(message.message + "<br />");
+        appendText(message.message);
     });
 
     socket.on('chat_user_disconnected', function(message) {
-        $("div.chat-text").append(message.message + "<br />");
+        appendText(message.message);
     });
 
     socket.on('chat_send_to_user', function(message) {
-        $("div.chat-text").append(message.user + " said: " + message.data + "<br />");
+        appendText(message.user + " said: " + message.data);
     });
 
     socket.on('lobby_room_created', function(room) {
@@ -85,6 +85,7 @@ $(document).ready(function() {
         socket.emit('lobby_delete_room', {'user': username, 'id': own_room});
         return false;
     });
+
     function appendRoom(isOwner, json) {
         var content = "<div class=\"col-md-4\"> \
             <div class=\"panel panel-default\"> \
@@ -115,4 +116,17 @@ $(document).ready(function() {
 
         $("div.rooms").append(content);
     }
+
+    function appendText(text) {
+        $("div.chat-text").append("<div class=\"text-text\">" + text + "<br /></div>");
+        var height = 0;
+        $('div.text-text').each(function(i, value) {
+            height += parseInt($(this).height());
+        });
+
+        height += '';
+
+        $("div.chat-box").animate({scrollTop: height});
+    }
+
 });
