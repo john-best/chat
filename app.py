@@ -117,7 +117,7 @@ def register():
         flash('You have successfully registered. Please login.')
         return redirect(url_for('lobby'))
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
     return redirect(url_for('lobby'))
