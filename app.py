@@ -15,6 +15,7 @@ socketio = SocketIO(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "/login"
 
 room_handler = RoomHandler()
 
@@ -118,6 +119,7 @@ def register():
         return redirect(url_for('lobby'))
 
 @app.route('/logout', methods=['GET', 'POST'])
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('lobby'))
