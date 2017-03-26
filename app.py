@@ -60,7 +60,7 @@ class User(db.Model):
 # flask anon user class
 class AnonUser(AnonymousUserMixin):
     def __init__(self):
-        self.username = 'Guest' + str(random.randint(1000, 9999))
+        self.username = 'Guest'
 
 login_manager.anonymous_user = AnonUser
 

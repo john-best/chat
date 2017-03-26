@@ -34,7 +34,11 @@
 </div>
 
 <div class="container">
+    {% if current_user.is_authenticated %}
     <input type="button" value="Create Room" id="lobby-create-room">
+    {% else %}
+    <input type="button" value="Create Room" id="lobby-create-room" disabled>
+    {% endif %}
     <input type="text" id="room-password" placeholder="Optional Password" size="15">
     <input type="button" value="Refresh Rooms" id="lobby-refresh-rooms">
 </div>
