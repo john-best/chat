@@ -28,6 +28,11 @@ $(document).ready(function() {
         appendRoom(true, parsed);
     });
 
+    socket.on('chat_user_list', function(userlist) {
+        //var parsed = JSON.parse(userlist);
+        console.log(userlist);
+    });
+
     socket.on('lobby_return_rooms', function(rooms) {
         var parsed = JSON.parse(rooms);
         for (var i = 0; i < parsed.rooms.length; i++) {

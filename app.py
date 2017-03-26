@@ -18,6 +18,7 @@ login_manager.init_app(app)
 login_manager.login_view = "/login"
 
 room_handler = RoomHandler()
+lobby_users = []
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rps.db'
 db = SQLAlchemy(app)
@@ -135,6 +136,8 @@ def handle_chat_connect():
     emit('chat_self_connected', {'username':current_user.username})
     emit('chat_user_connected',
     {'message':'{} has connected'.format(current_user.username)}, broadcast=True, include_self=False)
+    lobby_users.append(current_user.username)
+    emit('chat_user_list', {'userlist': lobby_users }, broadcast=True)
 
 @socketio.on('disconnect', namespace='/')
 def handle_chat_disconnect():
@@ -142,6 +145,12 @@ def handle_chat_disconnect():
     ghost_room = room_handler.get_room_by_owner(current_user.username)
     if ghost_room is not None:
         room_handler.delete_room(ghost_room)
+    lobby_users.remove(current_user.username)
+    emit('chat_user_list', {'userlist': lobby_users }, broadcast=True)
+
+@socketio.on('chat_get_users', namespace='/')
+def handlle_chat_get_users():
+    emit('chat_user_list', {'userlist': lobby_users })
 
 # end chat
 
