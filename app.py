@@ -127,6 +127,7 @@ def logout():
 
 
 @app.route('/rps', methods=['GET'])
+@app.route('/rps/', methods=['GET'])
 def rps_no_room():
     return redirect(url_for('lobby'))
 

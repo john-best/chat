@@ -52,7 +52,7 @@ class RoomHandler:
         return False
 
     def room_can_join(self, room, user, password=None):
-        if room.get_owner() == user or room.get_guest == user:
+        if room.get_owner() == user or room.get_guest() == user:
             if not room.is_passworded():
                 return True
             else:
