@@ -26,10 +26,10 @@ class RoomHandler:
             ids.append(room.get_id())
         return ids
 
-    def join_room(self, owner, user):
+    def join_room(self, owner, guest):
         for room in self.rooms:
             if (room.get_owner() == owner):
-                room.join(user)
+                room.join(guest)
                 return
 
     def get_rooms_json(self):
@@ -51,6 +51,15 @@ class RoomHandler:
                 return True
         return False
 
+    def room_can_join(self, room, user, password=None):
+        if room.get_owner() == user or room.get_guest == user:
+            if not room.is_passworded():
+                return True
+            else:
+                # TODO: password check
+                return True
+        return False
+
     def get_room_by_owner(self, owner):
         for potential_room in self.rooms:
             if owner == potential_room.get_owner():
@@ -68,22 +77,22 @@ class Room:
         self.rooms = rooms
         self.owner = owner
         self.password = password
-        self.user = None
+        self.guest = None
         self.id = id
         self.has_password = False
 
         if self.password is not '':
             self.has_password = True
 
-    def join(self, user):
-        self.user = user
+    def join(self, guest):
+        self.guest = guest
 
     def part(self, user):
         if user is self.owner:
             rooms.remove(self)
             return True
-        if self.user is user:
-            self.user = None
+        if self.guest is user:
+            self.guest = None
             return True
         return False
     
@@ -95,7 +104,7 @@ class Room:
                 'room': {
                     'id': '{}'.format(self.id),
                     'owner': '{}'.format(self.owner),
-                    'user': '{}'.format(self.user),
+                    'guest': '{}'.format(self.guest),
                     'password': '{}'.format(str(self.has_password).lower()),
                     }
                 }
@@ -103,3 +112,9 @@ class Room:
 
     def get_owner(self):
         return self.owner
+    
+    def get_guest(self):
+        return self.guest
+
+    def is_passworded(self):
+        return self.has_password
