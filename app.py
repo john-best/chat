@@ -80,9 +80,10 @@ def lobby():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
     if request.method == 'GET':
         return render_template('login.html')
+
+    error = None
 
     username = request.form['username']
     password = request.form['password']
@@ -92,8 +93,8 @@ def login():
         flash('Successfully logged in.')
         return redirect(url_for('lobby'))
     else:
-        flash('Invalid credentials.', 'error')
-        return redirect(url_for('login'))
+        error = 'Invalid username or password!'
+    return render_template('login.html', error=error)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -106,15 +107,16 @@ def register():
     email_exists = db.session.query(User.id).filter_by(email=request.form['email']).scalar() is not None
 
     if user_exists or email_exists:
-        flash('Username or Email already taken', 'error')
-        return redirect(url_for('register'))
+        error = 'Username or Email already taken'
+        return render_template('register.html', error=error)
     else:
         db.session.add(user)
         try:
             db.session.commit()
         except Exception as e:
+            error = 'There was a problem registering your account.'
             flash('An internal server error has occured.', 'error')
-            return redirect(url_for('register'))
+            return render_template('register.html', error=error)
 
         flash('You have successfully registered. Please login.')
         return redirect(url_for('lobby'))
