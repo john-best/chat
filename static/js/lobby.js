@@ -5,22 +5,14 @@ $(document).ready(function() {
     var username = "";
 
     socket.emit('lobby_get_rooms');
+    
+    socket.on('chat_server_recv', function(message) {
+        appendText(message.data);
+    });
 
     socket.on('chat_self_connected', function(user) {
         username = user.username;
         appendText("You have connected.");
-    });
-
-    socket.on('chat_user_connected', function(message) {
-        appendText(message.message);
-    });
-
-    socket.on('chat_user_disconnected', function(message) {
-        appendText(message.message);
-    });
-
-    socket.on('chat_send_to_user', function(message) {
-        appendText(message.user + " said: " + message.data);
     });
 
     socket.on('lobby_room_created', function(room) {
@@ -67,15 +59,13 @@ $(document).ready(function() {
     $('#chat-input-text').keypress(function(e) {
         if (e.which == '13') {
             if ($('#chat-input-text').val()) {
-                socket.emit('chat_send_to_server', {'user': username, 'data': $('#chat-input-text').val()});
+                socket.emit('chat_send_to_server', {'data': $('#chat-input-text').val()});
                 $('#chat-input-text').val("");
             }
         }
-
     });
 
     $('#lobby-create-room').click(function(e) {
-
         socket.emit('lobby_create_room', {'creator': username, 'password': $('#room-password').val()});
         return false;
     });
@@ -123,7 +113,10 @@ $(document).ready(function() {
     }
 
     function appendText(text) {
-        $("div.chat-text").append("<div class=\"text-text\">" + text + "<br /></div>");
+        var date = new Date();
+        var time = date.toLocaleTimeString();
+
+        $("div.chat-text").append("<div class=\"text-text\">[" + time + "] " + text + "<br /></div>");
         var height = 0;
         $('div.text-text').each(function(i, value) {
             height += parseInt($(this).height());

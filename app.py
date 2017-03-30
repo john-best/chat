@@ -146,19 +146,19 @@ def rps(id):
 
 @socketio.on('chat_send_to_server', namespace='/')
 def handle_chat_message(message):
-    emit('chat_send_to_user', message, broadcast=True)
+    emit('chat_server_recv', {'data': "&lt;{}&gt; {}".format(current_user.username, message['data'])}, broadcast=True)
 
 @socketio.on('connect', namespace='/')
 def handle_chat_connect():
     emit('chat_self_connected', {'username':current_user.username})
-    emit('chat_user_connected',
-    {'message':'{} has connected'.format(current_user.username)}, broadcast=True, include_self=False)
+    emit('chat_server_recv',
+    {'data':'{} has connected'.format(current_user.username)}, broadcast=True, include_self=False)
     lobby_users.append(current_user.username)
     emit('chat_user_list', {'userlist': lobby_users }, broadcast=True)
 
 @socketio.on('disconnect', namespace='/')
 def handle_chat_disconnect():
-    emit('chat_user_disconnected', {'message':'{} has disconnected'.format(current_user.username)}, broadcast=True)
+    emit('chat_server_recv', {'data':'{} has disconnected'.format(current_user.username)}, broadcast=True)
     ghost_room = room_handler.get_room_by_owner(current_user.username)
     if ghost_room is not None:
         room_handler.delete_room(ghost_room)
