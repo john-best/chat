@@ -23,12 +23,12 @@ class RoomHandler:
     def get_room_ids(self):
         ids = []
         for room in self.rooms:
-            ids.append(room.get_id())
+            ids.append(room.id)
         return ids
 
     def join_room(self, owner, guest):
         for room in self.rooms:
-            if (room.get_owner() == owner):
+            if (room.owner == owner):
                 room.join(guest)
                 return
 
@@ -47,13 +47,13 @@ class RoomHandler:
     
     def room_check_exists(self, owner):
         for potential_room in self.rooms:
-            if owner == potential_room.get_owner():
+            if owner == potential_room.owner:
                 return True
         return False
 
     def room_can_join(self, room, user, password=None):
-        if room.get_owner() == user or room.get_guest() == user:
-            if not room.is_passworded():
+        if room.owner == user or room.guest == user:
+            if not room.has_password:
                 return True
             else:
                 # TODO: password check
@@ -62,13 +62,13 @@ class RoomHandler:
 
     def get_room_by_owner(self, owner):
         for potential_room in self.rooms:
-            if owner == potential_room.get_owner():
+            if owner == potential_room.owner:
                 return potential_room
         return None
     
     def get_room(self, id):
         for room in self.rooms:
-            if id is room.get_id():
+            if id is room.id:
                 return room
         return None
 
@@ -96,9 +96,6 @@ class Room:
             return True
         return False
     
-    def get_id(self):
-        return self.id
-
     def get_json(self):
         data = {
                 'room': {
@@ -109,12 +106,3 @@ class Room:
                     }
                 }
         return data
-
-    def get_owner(self):
-        return self.owner
-    
-    def get_guest(self):
-        return self.guest
-
-    def is_passworded(self):
-        return self.has_password

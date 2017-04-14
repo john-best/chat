@@ -177,7 +177,7 @@ def handle_lobby_create_room(data):
     if not room_handler.room_check_exists(data['creator']):
         room = room_handler.create_room(data['creator'], data['password'])
         room_json = room_handler.get_room_json(room)
-        join_room(room.get_id())
+        join_room(room.id)
         emit('lobby_room_created', json.dumps(room_json))
     else:
         emit('lobby_room_already_exists')
@@ -196,7 +196,7 @@ def handle_lobby_delete_room(data):
         emit('lobby_room_does_not_exist')
         return
 
-    if room.get_owner() == data['user']:
+    if room.owner == data['user']:
         deleted = room_handler.delete_room(room)
 
     if deleted is not None:
