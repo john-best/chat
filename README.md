@@ -1,2 +1,2 @@
-# rps
-RPS game using Flask
+# chat!
+chat application using Flask
