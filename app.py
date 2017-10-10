@@ -133,15 +133,6 @@ def logout():
 def rps_no_room():
     return redirect(url_for('lobby'))
 
-@app.route('/rps/<int:id>', methods=['GET'])
-def rps(id):
-    room = room_handler.get_room(id)
-
-    if room and room_handler.room_can_join(room, current_user.username):
-        return render_template('rps.html', id=id)
-
-    return redirect(url_for('lobby'))
-
 # begin chat
 
 @socketio.on('chat_send_to_server', namespace='/')
